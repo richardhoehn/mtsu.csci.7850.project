@@ -1,0 +1,20 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  Deep Learning Semester Project - Demand Forecasting
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Richard
+    family-names: Hoehn
+    email: rhoehn@mtmail.mtsu.edu
+    orcid: 'https://orcid.org/0009-0003-0086-8993'
+    affiliation: Middle Tennessee State Univerisity
+repository-code: 'https://github.com/richardhoehn/mtsu.csci.7850.project'
+license: MIT
+version: 1.0.1
+date-released: '2023-12-01'
