@@ -1,0 +1,13 @@
+{
+  "shell_port": 41961,
+  "iopub_port": 47761,
+  "stdin_port": 37249,
+  "control_port": 45983,
+  "hb_port": 50215,
+  "ip": "127.0.0.1",
+  "key": "f6534d88-bc482f8810a252a9c251b121",
+  "transport": "tcp",
+  "signature_scheme": "hmac-sha256",
+  "kernel_name": "python3",
+  "jupyter_session": "/home/rhoehn/src/notebooks/demand-transformer.ipynb"
+}

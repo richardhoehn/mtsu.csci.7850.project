@@ -1,0 +1,13 @@
+{
+  "shell_port": 40549,
+  "iopub_port": 51149,
+  "stdin_port": 45233,
+  "control_port": 38097,
+  "hb_port": 60409,
+  "ip": "127.0.0.1",
+  "key": "629e6b54-1a3aa3139206093252aba0e5",
+  "transport": "tcp",
+  "signature_scheme": "hmac-sha256",
+  "kernel_name": "python3",
+  "jupyter_session": "/home/rhoehn/src/notebooks/data-loader.ipynb"
+}
