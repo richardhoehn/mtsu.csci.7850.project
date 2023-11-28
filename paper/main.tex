@@ -3,13 +3,13 @@
 \geometry{margin=1in}
 
 
-\title{Demand Forecasting by use of\\Long-Short Term Memory (LSTM) Architectures}
+\title{Demand Forecasting by use of\\Long-Short Term Memory (LSTM) Architecture}
 
 \author{Richard Hoehn%
 	\thanks{Electronic address: \texttt{rhoehn@mtmail.mtsu.edu}; corresponding author}}
 \affil{Middle Tennessee State University\\ \small CSCI 7850\\ \small Prof. Dr. Joshua L. Phillips}
 
-\date{\today}
+\date{\vspace{1em}\today}
 
 \begin{document}
 
@@ -17,7 +17,7 @@
 \maketitle
 
 \begin{abstract}
-This is where the abstract lives... n focusing my research and student learning on demand forecasting using Deep Learning recurrent neural networks (RNNs) in specific the Long Short Term Memory (LSTM)  and Gate Recurrent Units (GRU) architectures. Both the LSTM and GRU models can capture complex temporal dependencies over longer ranges of time
+This term project focused employing deep learning recurrent neural networks (RNNs) in specific the Long Short Term Memory (LSTM) architecture to predict real-world sales demand comprised of five (5) years of store sales data based on 50 different items at 10 different stores. Each data point is a single day's data-point (rows). In order to solve the this problem I employed data grouping by date and using MinMax-Scalers to normalize the data. Due to the nature of the data being from real-world sources I had to take the 7-day rolling average to smooth out the daily noise. LSTM models are frequently used\cite{pharma-sales-forecast-lstm} to analyze and make predictions based on time-series data, which is a common characteristic in demand forecasting scenarios. My LSTM model worked well using a 90-day sequence for training and validation. In order for the loss to be calculated the Mean-Squared Error (MSE) function was used with up to 150 epochs during training. Numerous plots displaying the data distributions before and after normalization plus the training vs. validation visual are presented in the results section of this paper below. With the positive results of the LSTM being able to do a "visually" good job of predicting the future demand I hypothesise that it may worth reviewing if I would get good results using individual store data to try to better predict on a individual store basis future demand.
 \end{abstract}
 
 
@@ -46,7 +46,7 @@ LSTM models have emerged as a "go-to" tool\cite{pharma-sales-forecast-lstm, pred
 
 Unlike traditional RNN architectures the LSTM design can regulate the forward and backwards flow of information and more importantly be able to forget non-valuable data-traits. This means that LSTMs can remember pertinent information and utilize patterns from longer\cite{predicting-sales-lstm} historical data, which is an important feature for predicting future sales demand trends that may not be linear in nature\cite{improved-sales-forecasting}.
 
-In many of the papers reviewed\cite{pharma-sales-forecast-lstm, predicting-sales-lstm} that extensively use the LSTM architecture to work on demand forecasts, they use tabular apporaches to validate the loss and accuracy of their models; I however  plan on using some plotting techniques.
+In many of the papers reviewed\cite{pharma-sales-forecast-lstm, predicting-sales-lstm} that extensively use the LSTM architecture to work on demand forecasts, they use tabular approaches to validate the loss and accuracy of their models; I however  plan on using some plotting techniques.
 
 
 \section{Methods}
@@ -120,22 +120,61 @@ These sequence and target pairs are then split into a 80-20 split for training a
 \subsection{LSTM Model \& Training}
 The LSTM architecture consists of a cell state and three (3) gates: the input gate, which regulates the addition of new information to the cell state; the forget gate, which controls the removal of information irrelevant to the prediction task; and the output gate, which determines what information from the cell state to use in the output.
 
-In or
+In order for training I use the Mean Squared Error (MSE) loss, often used in regression problems\cite{improved-sales-forecasting}, is calculated as the average of the squared differences between the predicted values and the actual values. Details of the learning late of the LSTM model can me seeing in Figure \ref{fig:mse-loss} in the following section below.
+
+$$
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
+$$
 
 
 \section{Results}
+The following sections will be numerical and visual representations of the work I did on this project.
 
 \subsection{Data Preparation \& Normalization}
+As discussed in the methods section the Kaggle data is very noisy on a daily basis, hence using the 7-day average the demand is much smoother.
+
+\begin{figure}[h]
+\centering
+\captionsetup{justification=centering,margin=1cm}
+\includegraphics[width=0.45\textwidth]{raw-vs-avg.png}
+\caption{Raw (Noise) Data vs. 7-Day Average}
+\label{fig:raw-vs-avg}
+\end{figure}
 
 \subsection{Model Training \& Hyper-Parameter Tuning}
+In table \ref{tab:hyper-parameters} one see all the used for hyper-parameters in the LSTM model setup. 
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|rc|rc|}
+\hline
+\multicolumn{4}{|c|} {LSTM Parameters} \\  
+\hline
+  Learning Rate  &  0.001   &  Dropout  &  0.1  \\ \hline
+  Hidden Layers  &  50   &  LSTM Layers   &  4  \\ \hline
+  Number of Epochs & 150 \\ \hline
+\end{tabular}
+\caption{Hyper-Parameter for LSTM Model}
+\label{tab:hyper-parameters}
+\end{table}
+
+More table details here...
+
+\begin{figure}[h]
+\centering
+\captionsetup{justification=centering,margin=1cm}
+\includegraphics[width=0.45\textwidth]{mse-loss.png}
+\caption{MSE Loss Details on Learning}
+\label{fig:mse-loss}
+\end{figure}
 
 \subsection{Plotting of Actual and Predicted Values}
 The training validation of the model are quire promising. In figure \ref{fig:true-vs-predicted} the reader can see that it overall follows the true path during the training and test phases. 
 
-\begin{figure}[hp]
+\begin{figure}[h]
 \centering
 \captionsetup{justification=centering,margin=1cm}
-\includegraphics[width=0.4\textwidth]{true-vs-predicted.png}
+\includegraphics[width=0.45\textwidth]{true-vs-predicted.png}
 \caption{True vs. Predicted during training of model}
 \label{fig:true-vs-predicted}
 \end{figure}
