@@ -6,59 +6,86 @@
 \title{Demand Forecasting by use of\\Long-Short Term Memory (LSTM) Architecture}
 
 \author{Richard Hoehn%
-	\thanks{Electronic address: \texttt{rhoehn@mtmail.mtsu.edu}; corresponding author}}
+	\thanks{Email: \texttt{rhoehn@mtmail.mtsu.edu}; corresponding author}}
 \affil{Middle Tennessee State University\\ \small CSCI 7850\\ \small Prof. Dr. Joshua L. Phillips}
 
 \date{\vspace{1em}\today}
 
 \begin{document}
 
-
 \maketitle
 
 \begin{abstract}
-This term project focused employing deep learning recurrent neural networks (RNNs) in specific the Long Short Term Memory (LSTM) architecture to predict real-world sales demand comprised of five (5) years of store sales data based on 50 different items at 10 different stores. Each data point is a single day's data-point (rows). In order to solve the this problem I employed data grouping by date and using MinMax-Scalers to normalize the data. Due to the nature of the data being from real-world sources I had to take the 7-day rolling average to smooth out the daily noise. LSTM models are frequently used\cite{pharma-sales-forecast-lstm} to analyze and make predictions based on time-series data, which is a common characteristic in demand forecasting scenarios. My LSTM model worked well using a 90-day sequence for training and validation. In order for the loss to be calculated the Mean-Squared Error (MSE) function was used with up to 150 epochs during training. Numerous plots displaying the data distributions before and after normalization plus the training vs. validation visual are presented in the results section of this paper below. With the positive results of the LSTM being able to do a "visually" good job of predicting the future demand I hypothesise that it may worth reviewing if I would get good results using individual store data to try to better predict on a individual store basis future demand.
+This term project focused employing deep learning recurrent neural networks (RNNs) in specific the Long-Short Term Memory (LSTM) architecture to predict real-world sales demand. The data used is comprised of five (5) years of store sales data based on 50 different items at 10 different stores; each data point is a single day's sales. In order to solve the this problem I employed grouping by date, essentially a uni-variant temporal, and used the MinMax-Scalers to normalize the data for model training. Due to the nature of the data being from real-world sources a 7-day rolling average to employed for smoothing out the daily noise.
+
+Predictions were based on LSTM models which are frequently used\cite{pharma-sales-forecast-lstm} to analyze and predict time-series (temporal) regression problems. The specific LSTM model deployed worked well using a 90-day sequence(s) for training and validation. Since this problems is a regression problem the loss is calculated by employing the Mean-Squared Error (MSE) function with up to 150 epochs during training.
+
+A variety of plots displaying the data distributions before and after normalization plus the training vs. validation results are visually displayed to illustrate that the overall prediction trend of the trained LSTM model closely follows the true (real-world) sales trends. This suggests that the LSTM model learned the underlying demand pattern in the training data well and is able to predict the future demands with some degree of accuracy. Since the predicted values closely follow the true values, one can infer that the model has a good performance.
+
+I hypothesize that it may be worth reviewing if I better results would be gleaned by using individual store data to try to better predict on a individual store basis future demand.
 \end{abstract}
 
 
 \section{Introduction}
-In this term project I focused my student learning on demand forecasting, which is the process of predicting future customer demand for products or services using a variety of data-points based on a temporal data\footnote{In this project the temporal was daily sales}.
+In this term project I focused my student learning on demand forecasting, which is the process of predicting future customer demand for products or services using a variety of historical data-points based on a temporal data\footnote{In this project the temporal was daily sales} lineage.
 
-By employing deep learning recurrent neural networks (RNNs) in specific the Long Short Term Memory (LSTM) architecture my goal was to provide a model to predict sales demand based on historical daily sales data. The LSTM model can capture complex temporal dependencies over long ranges of time and patterns in historical sales data\cite{pharma-sales-forecast-lstm, predicting-sales-lstm, lstm-gru-performance} making it\footnote{The LSTM Architecture} a very good option for demand forecasting tasks.
+By employing deep learning recurrent neural networks (RNNs) in specific the Long-Short Term Memory (LSTM) architecture my goal was to provide a model to predict sales demand based on historical daily sales data. The LSTM model can capture complex temporal dependencies over long ranges of time and patterns in historical sales data\cite{pharma-sales-forecast-lstm, predicting-sales-lstm, lstm-gru-performance} making it\footnote{The LSTM Architecture} a very good option for demand forecasting tasks.
 
 My motivation for the this project is two fold:
 
-\textbf{Firstly}, a time-series problem is very interesting for me personally since I often question how one can predict the future based on past data; additionally how the future might change if the input of data is changed as scenario forecasting.
+\textbf{Firstly}, a time-series problem is very interesting for me personally since I often question how one can predict the future based on past data; additionally how the future might change if the input of data is changed as a type scenario forecasting exercise.
 
-\textbf{Secondly}, a better understanding of RNNs in specific LSTM architectures will better my grasp of this field and help me learn for my future endeavors in Computation \& Data Sciences with regards to forecasting model design.
+\textbf{Secondly}, a better understanding of RNNs in specific the LSTM architectures will better my understanding of this deep learning field and prepare me for my future research in Computation \& Data Sciences with regards to forecasting model designs.
 
-In order to complete this project I used data from Kaggle's Demand Forecasting challenge\cite{demand-forecasting-kernels-only} released in 2018. The dataset is comprised of five (5) years of store sales data based on 50 different items at 10 different stores. Each data point is on a daily basis; with this being said the training dataset is comprised of 912,500 rows in a \texttt{csv} file. 
+In order to complete this project data from Kaggle's Demand Forecasting challenge\cite{demand-forecasting-kernels-only} released in 2018 was used. The dataset is comprised of five (5) years of store sales data based on 50 different items at 10 different stores. Each data point is on a daily basis; resulting in the training dataset being 912,500 rows of data in a \texttt{csv} file. 
 
-My key aims for this project are:
+The key aims for this project are:
 \begin{itemize}
-    \item Deploy the dataset in the cloud for remote extraction, process, and scrubbing for training, validation, testing, and graphical display purposes.
-    \item Build, Train, and Validate the LSTM model with the processed Kaggle\cite{demand-forecasting-kernels-only} dataset.
-    \item \textit{and finally}, using multiple potting techniques provide a graphical approach to reviewing the performance of the LSTM model for prediction on the Kaggle\cite{demand-forecasting-kernels-only} dataset.
+    \item Deploy the dataset in the cloud (AWS) for remote extraction, process, and scrubbing that can then be used for training, validation, testing by the use of LSTM architectures.
+    \item Build, Train, and Validate the LSTM model with the pre-processed Kaggle\cite{demand-forecasting-kernels-only} dataset.
+    \item \textit{and finally}, using multiple potting techniques provide a visual approach to reviewing the performance of the LSTM model for prediction on the Kaggle\cite{demand-forecasting-kernels-only} dataset.
 \end{itemize}
 
 \section{Background}
-LSTM models have emerged as a "go-to" tool\cite{pharma-sales-forecast-lstm, predicting-sales-lstm} in the field of demand forecasting. Based on the recurrent neural network (RNN) architecture, LSTM models are frequently used\cite{pharma-sales-forecast-lstm} to analyze and make predictions based on time-series data, which is a common characteristic in demand forecasting scenarios.
+LSTM models have emerged as a "go-to" tool\cite{pharma-sales-forecast-lstm, predicting-sales-lstm} in the field of demand forecasting. Based on a recurrent neural network's (RNN) architecture, LSTM models are frequently used\cite{pharma-sales-forecast-lstm} to analyze and make predictions based on time-series data, which is a common characteristic in demand forecasting scenarios.
 
-Unlike traditional RNN architectures the LSTM design can regulate the forward and backwards flow of information and more importantly be able to forget non-valuable data-traits. This means that LSTMs can remember pertinent information and utilize patterns from longer\cite{predicting-sales-lstm} historical data, which is an important feature for predicting future sales demand trends that may not be linear in nature\cite{improved-sales-forecasting}.
+Unlike traditional RNN architectures the LSTM design can regulate the forward and backwards flow of information and more importantly be able to forget non-valuable data-traits. This means that LSTMs can remember pertinent information and utilize patterns from longer\cite{predicting-sales-lstm} historical data, which is an important feature for predicting future sales demand trends that may not be linear in nature\cite{improved-sales-forecasting} or have seasonal traits that need to be captured.
 
-In many of the papers reviewed\cite{pharma-sales-forecast-lstm, predicting-sales-lstm} that extensively use the LSTM architecture to work on demand forecasts, they use tabular approaches to validate the loss and accuracy of their models; I however  plan on using some plotting techniques.
+In many of the papers reviewed\cite{pharma-sales-forecast-lstm, predicting-sales-lstm} that used the LSTM architecture on demand forecasts, a tabular / numerical approach to validate the loss and accuracy of their models was used; I however plan on using visual plotting techniques to better gauge the perceived accuracy of these predictive regression problems.
 
 
 \section{Methods}
+In this section the mathematical, theoretical, and practical execution of this term project is introduced and references to the technologies, datasets, and visualization techniques presented.
+
+
 \subsection{Data Preparations}
-The dataset is comprised of five (5) years of store sales data based on 50 different items at 10 different stores. Each data point is a single day's data-point (rows) with this being said the dataset is comprised of 912,500 rows in a \texttt{csv} file.
+The dataset\cite{demand-forecasting-kernels-only} is comprised of five (5) years of store sales data based on 50 different items at 10 different stores. Each data point is a single day's data-point (rows) with this being said the dataset is comprised of 912,500 rows in a \texttt{csv} file.
 
-With the data being a simple tab-based row-column structure I can infer the daily total sales for all stores can be represented as a vector $s$, where each element $s_i$ is the sum of sales across all stores for day $i$.
+{\renewcommand{\arraystretch}{2}
+\begin{table}[h]
+\centering
+\begin{tabular}{|rc|rc|}
+\multicolumn{4}{c} {\textbf{Dataset Details}} \\  
+\hline
+  Years       &  5      &  Days            &  1,826 \\ \hline
+  Stores      &  10     &  Items per Store &  50    \\ \hline
+  Datapoints  & 912,500 & File Type        & csv    \\ \hline
+  Min (\$USD) & 11,709  & Max (\$USD)      & 44,936 \\ \hline
+  Mean        & 912     & Std.             & 527    \\ \hline
+\end{tabular}
+\caption{Kaggle Demand Forecast Details}
+\label{tab:dataset-details}
+\end{table}
+}
 
-$$
+With the data being a simple tab-based row-column structure I can infer the daily total sales for all stores can be represented as $s$, where each element $s_i$ is the sum of sales across all stores for day $i$.
+
+\begin{equation}
 s_i = \sum_{j=1}^{n} a_{ij}
-$$
-In this formula:
+\label{eq:group-sum}
+\end{equation}
+
+In this Equation \ref{eq:group-sum} the following is given:
 \begin{itemize}
     \item $i$ index for days
     \item $j$ index for stores
@@ -68,70 +95,94 @@ In this formula:
 
 
 \subsection{Smoothing \& Normalization of Dataset}
-Based on the description from Kaggle\cite{demand-forecasting-kernels-only} of the data it's evident that it is derived from real-world sources, suggesting it's inherent noise. It is also stated in Kaggle's information that the sales data is in whole US Dollars (\$USD).
-\subsubsection{Smoothing}
-In order to enhance the demand forecasting capabilities of my model, I will be using a smoothing algorithm to help the model learn more easily without the daily noise. A good methodical approach was to use a 7day moving average approach.
+Based on the description from Kaggle\cite{demand-forecasting-kernels-only} of the data it's evident that it is derived from real-world sources, suggesting it's inherent noise. It is also stated in Kaggle's information that the sales data is in whole US Dollars (\$USD), which means that the values are rather large and are whole (real) numbers in nature.
 
-$$
+
+\subsubsection{Smoothing}
+In order to enhance the demand forecasting capabilities of my model, I used a smoothing algorithm to help the model learn more easily without the daily noise. A good methodical approach was to use a 7day moving average approach.
+
+\begin{equation}
 \text{MA}_i = \frac{1}{7} \sum_{k=i-6}^{i} s_k
-$$
-In this formula:
+\label{eq:moving-average}
+\end{equation}
+
+In Equation \ref{eq:moving-average} the details of the moving average are as follows:
 \begin{itemize}
-    \item $MA_i$ is the 7-day moving average on day $i$
+    \item $\text{MA}_i$ is the 7-day moving average on day $i$
     \item $sk$ represents the sales on day $k$
     \item The summation $\sum_{k=i-6}^{i} s_k$ calculates the total sales over the 7-day period ending on day $i$ (from day $i-6$ to day $i$)
     \item The factor $\frac{1}{7}$ averages the total sales over these 7 days
 \end{itemize}
 
+
 \subsubsection{Normalization}
-Normalization is an important preparation step when preparing sales data for training an LSTM model\cite{improved-sales-forecasting}. This process involves scaling the sales data (in USD) so that it falls within a specific range, typically between -1 and 1. The purpose of normalization is to ensure that all sales contribute equally to the learning process, preventing some sales data with larger swings (magnitudes) from overpowering the model's learning process.
+Normalization is an important preparation step when preparing sales data for training an LSTM model\cite{improved-sales-forecasting}. This process involves scaling the sales data which is in large whole \$USDs\footnote{See Table \ref{tab:dataset-details}'s Min, Max, \& Std. details} so that it falls within a specific range, typically between -1 and 1. The purpose of normalization is to ensure that all sales contribute equally to the learning process, preventing some sales data with larger swings (magnitudes) from overpowering\cite{improved-sales-forecasting} the model's learning process.
 
-The process I chose for this project was using the \texttt{MinMaxScaler()}\footnote{Python: \texttt{from sklearn.preprocessing import MinMaxScaler}}, where the minimum value of the data becomes \textsc{-1} and the maximum value becomes \textsc{1}.
+The process I chose for this project was using the \texttt{MinMaxScaler()}\footnote{Python: \texttt{from sklearn.preprocessing import MinMaxScaler}}, where the minimum value of the data becomes \textsc{-1} and the maximum value becomes \textsc{1}. A formulaic representation of this type scaler can be seen in Equation \ref{eq:min-max-scaler} for details.
 
-$$
+\begin{equation}
 x_{scaled} = \frac{x-x_{min}}{x_{max}-x_{min}}
-$$
+\label{eq:min-max-scaler}
+\end{equation}
 
-this process allowed for all the data to be ready for further 
+It should be noted that the pre-processing step this project applied is the same as many of the reviewed articles\cite{demand-forecasting-lstm, improved-sales-forecasting} for this term project. Further, many of the reviewed papers\cite{demand-forecasting-lstm} also stated the importance of normalization when training across multiple related time series as the ranges of values may demand based projects differ significantly between the temporal series.
 
 \subsection{Sequence Data}
-After smoothing and normalization, I divided the data into overlapping 90-day sequences. As an example, the first sequence consists of sales data from January 1 to March 31, and then the next from January 2 to April 1, and so on. The target variable for each sequence would be the sales data following the 90-day period, which in my case is the next day's sales data.
+After smoothing and normalization, I divided the data into overlapping 90-day sequences, which is illustrated in Equation \ref{eq:sequence-matrix}. As an example, the first sequence consists of sales data from January 1 to March 31, and then the next from January 2 to April 1, and so on. The target variable for each sequence would be the sales data following the 90-day period, which in my case is the next day's sales data.
 
 If the target is the sales data for the next day, and you represent the sales data for a single day as $S_t$, then the target for sequence $X_i$ would be $S_{t+1}$, where $t$ is the last day in the 90-day sequence.
 
-$$
+\begin{equation}
 \mathbf{X}_i = \begin{bmatrix} 
 S_{t-89} \\ 
 S_{t-88} \\ 
 \vdots \\ 
 S_t 
 \end{bmatrix}
-$$
+\label{eq:sequence-matrix}
+\end{equation}
 
 And for the target variable $y_i$, which is the sales data for the day following the 90-day sequence:
 
-$$
+\begin{equation}
 \mathbf{y}_i = S_{t+1}
-$$
+\label{eq:sequence-data}
+\end{equation}
 
-These sequence and target pairs are then split into a 80-20 split for training and validation.
+These sequence(s) represented in Equation \ref{eq:sequence-data} and their respective target pairs are then split into a 80-20 split for training and validation purposes.
 
 
 \subsection{LSTM Model \& Training}
-The LSTM architecture consists of a cell state and three (3) gates: the input gate, which regulates the addition of new information to the cell state; the forget gate, which controls the removal of information irrelevant to the prediction task; and the output gate, which determines what information from the cell state to use in the output.
+The LSTM architecture shown in Figure \ref{fig:lstm-model} consists of a cell state and three (3) gates: the input gate, which regulates the addition of new information to the cell state; the forget gate, which controls the removal of information irrelevant to the prediction task; and the output gate, which determines what information from the cell state to use in the output.
 
-In order for training I use the Mean Squared Error (MSE) loss, often used in regression problems\cite{improved-sales-forecasting}, is calculated as the average of the squared differences between the predicted values and the actual values. Details of the learning late of the LSTM model can me seeing in Figure \ref{fig:mse-loss} in the following section below.
+\begin{figure}[h]
+\centering
+\captionsetup{justification=centering,margin=1cm}
+\includegraphics[width=0.3\textwidth]{lstm-network.png}
+\caption{LSTM Model used during training}
+\label{fig:lstm-model}
+\end{figure}
 
-$$
+In order for training the Mean Squared Error (MSE) loss function was used. The MSE is often used in regression problems\cite{improved-sales-forecasting} due to it's simplicity, which is the calculated average of the squared differences between the predicted values and the actual values as can be seen in Equation \ref{eq:mse}.
+
+\begin{equation}
 \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
-$$
+\label{eq:mse}
+\end{equation}
+
+Details of the learning rate of the LSTM model can me seeing in Figure \ref{fig:mse-loss} in the following sections below.
 
 
 \section{Results}
-The following sections will be numerical and visual representations of the work I did on this project.
+The subsequent sections are dedicated to presenting both numerical data, used parameters, and visual illustrations that present the work and how it performed in regards to this term project.
+
+A substantial amount of the project involved programming, testing, deploying, and training the LSTM model utilizing MTSU\footnote{Middle Tennessee State University}'s High-Performance Computing (HPC) resources.
+
+A general analysis is provided, offering a visual review at the model's performance, including loss over time, as well as other evaluation criteria. In addition to numerical representations, I will include an array of visual aids to convey the general performance of the model, the dynamics of the HPC resource utilization, and the general processes of training and validation. These visuals are designed to enhance the comprehensibility of the data and to bring to light the details of the LSTM's computational work that was performed for this term project.
+
 
 \subsection{Data Preparation \& Normalization}
-As discussed in the methods section the Kaggle data is very noisy on a daily basis, hence using the 7-day average the demand is much smoother.
+As discussed in detail in the methods section of my project, I observed that the Kaggle dataset\cite{demand-forecasting-kernels-only} exhibits significant noise on a daily basis. This noise (see Std. in Table \ref{tab:dataset-details}) can prevent model's seeing the underlying trends and patterns in the data, making it challenging to extract meaningful sales demand insights.
 
 \begin{figure}[h]
 \centering
@@ -141,24 +192,27 @@ As discussed in the methods section the Kaggle data is very noisy on a daily bas
 \label{fig:raw-vs-avg}
 \end{figure}
 
-\subsection{Model Training \& Hyper-Parameter Tuning}
-In table \ref{tab:hyper-parameters} one see all the used for hyper-parameters in the LSTM model setup. 
+To address this issue, I implemented a smoothing technique by calculating a 7-day moving average (see Equation \ref{eq:moving-average} on page \pageref{eq:moving-average}). This approach effectively reduces the daily fluctuations, resulting in a much smoother trend line that more accurately reflects the underlying demand patterns. The impact of this smoothing technique is clearly evident when examining Figure \ref{fig:raw-vs-avg}. The visual shows the blue line representing the raw, un-smoothed data, while the orange line shows the smoothed data using the 7-day average. The comparison between these two lines in the plot highlights the potential effectiveness of the smoothing process, showcasing a more coherent and interpret-able trend in the demand.
 
+\subsection{Model Training \& Hyper-Parameter Tuning}
+In Table \ref{tab:hyper-parameters} the used for hyper-parameters in the LSTM model setup are listed. It should be noted that since dropout layer(s) are only applied during training, the architecture used in the training phase differs from the one used when performing predictions. The one used during training is schematically illustrated in Figure \ref{fig:lstm-model} on page \pageref{fig:lstm-model}.
+
+{\renewcommand{\arraystretch}{2}
 \begin{table}[h]
 \centering
 \begin{tabular}{|rc|rc|}
+\multicolumn{4}{c} {\textbf{LSTM Parameters}} \\  
 \hline
-\multicolumn{4}{|c|} {LSTM Parameters} \\  
-\hline
-  Learning Rate  &  0.001   &  Dropout  &  0.1  \\ \hline
-  Hidden Layers  &  50   &  LSTM Layers   &  4  \\ \hline
-  Number of Epochs & 150 \\ \hline
+  Learning Rate    &  0.001 & Dropout      & 0.1 \\ \hline
+  Hidden Layers    &  50    & LSTM Layers  & 4   \\ \hline
+  Number of Epochs & 150    & Sequence Size & 90d  \\ \hline
 \end{tabular}
 \caption{Hyper-Parameter for LSTM Model}
 \label{tab:hyper-parameters}
 \end{table}
+}
 
-More table details here...
+The training time for this compact model was quite brief, averaging only about 12 minutes on the HPC GPUs performing 150 epochs (see Table \ref{tab:hyper-parameters}).
 
 \begin{figure}[h]
 \centering
@@ -168,8 +222,11 @@ More table details here...
 \label{fig:mse-loss}
 \end{figure}
 
+Furthermore, evidence of overfitting was not observed in my analysis, which is indicated by the loss curves for both training and validation. The curves remained mostly parallel throughout the learning process, suggesting a consistent performance between the training and validation phase. I therefore believe that the parallel trend suggests the model generalized well.
+
+
 \subsection{Plotting of Actual and Predicted Values}
-The training validation of the model are quire promising. In figure \ref{fig:true-vs-predicted} the reader can see that it overall follows the true path during the training and test phases. 
+The training validation of the model are quite promising. Figure \ref{fig:true-vs-predicted} illustrates that it\footnote{The LSTM Model} overall follows the true path during the training and test phases. Overall this trend indicates that both lines follow a similar pattern, with the predicted values closely mirroring the true values. This suggests that the LSTM model has learned the underlying pattern in the training data well and is able to predict the future values with some degree of accuracy.
 
 \begin{figure}[h]
 \centering
@@ -182,8 +239,22 @@ The training validation of the model are quire promising. In figure \ref{fig:tru
 
 
 \section{Discussion}
+The following section reviews in detail the True vs. Predicted (see Figures \ref{fig:true-vs-predicted} \& \ref{fig:prediction-detail}) results of the LSTM model training. Using separate training and test datasets was critical to ensure that the model learns to generalize from sales demand patterns\footnote{Seasonality plays a large role in demand forecasts} in the data rather than memorizing it. With this in mind the test data provides an unbiased evaluation of the model's predictive performance on unseen data, reflecting its potential effectiveness in real-world applications. As previously mentioned in Table \ref{tab:dataset-details} on page \pageref{tab:dataset-details} the 80 / 20 split rule was used for training and validation data.
 
 \subsection{Review of Plots}
+In Figure \ref{fig:prediction-detail} it is apparent the the LSTM model as able to learn the underlying seasonality of the sales and would therefore be able to predict future demands. However as one can see in Figure \ref{fig:true-vs-predicted} it seems as time moves forward that the difference between true and predicted values skews higher over time. A more detailed view of this is also displayed in Figure \ref{fig:prediction-detail} on page \pageref{fig:prediction-detail}. 
+
+\begin{figure}[h]
+\centering
+\captionsetup{justification=centering,margin=1cm}
+\includegraphics[width=0.45\textwidth]{predicted-detail.png}
+\caption{Prediction vs. True detail on peaks}
+\label{fig:prediction-detail}
+\end{figure}
+
+Overall Trend review indicates that both lines follow a similar pattern, with the predicted values closely mirroring the true values. This suggests that the LSTM model has learned the underlying pattern in the training data well and is able to predict the future values with some degree of accuracy. Since the predicted values closely follow the true values, one could infer that the model has a good performance. 
+
+It should be noted that detail review of the "peak" shows a slight degradation over time from the actual true values. This can be observed in Figure \ref{fig:prediction-detail} in detail as the true (blue) value line peaks higher than the predicted (orange).
 
 \subsection{Future Work}
 In order to enhance the demand forecasting capabilities of my models, I intend to explore the extraction of additional contextual information related to the timestamps, such as seasons, weekdays, holidays, or any other relevant time-based factors. By incorporating these additional features into the dataset, I aim to provide the LSTM model with a richer contextual understanding of the underlying data, which can lead to more accurate predictions.
