@@ -3,29 +3,27 @@ import torch.nn as nn
 import lightning.pytorch as pl
 
 class LSTM_Model(pl.LightningModule):
-    def __init__(self, input_size=1, hidden_size=50, num_layers=1):
+    def __init__(self, input_size=1, hidden_size=50, num_layers=1, dropout=0.1, learning_rate=0.001):
         super(LSTM_Model, self).__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.num_layers = num_layers
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.learning_rate = learning_rate
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, dropout=dropout)
         self.fc = nn.Linear(hidden_size, input_size)
         self.loss = nn.MSELoss()
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=0.002)
+        optimizer = torch.optim.Adam(self.parameters(), lr=self.learning_rate)
         return optimizer
 
     def forward(self, x):
-        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size)
-        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size)
-        
-        out, _ = self.lstm(x, (h0, c0))
-        out = self.fc(out[:, -1, :])
-        return out
+        y = x
+        y, _ = self.lstm(y)
+        y = self.fc(y[:, -1, :])
+        return y
 
     def training_step(self, train_batch, batch_idx):
-        # training_step defines the train loop. It is independent of forward
         x, y_true = train_batch
         y_pred = self(x)
         loss = self.loss(y_pred, y_true)
