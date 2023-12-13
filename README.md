@@ -1,10 +1,18 @@
 # Deep Learning Project - LSTM Demand Forecasting
 
-This is the repository for the Deep Learning semester project at MTSU (CSCI 7850).
+This is the repository for the Deep Learning semester project at MTSU (CSCI 7850). This repository holds information regarding the term project that uses the Long-Short Term Memory (LSTM), a deep learning recurrent neural network architecture, to predict real-world sales demand. Predictions were based on the LSTM model which is frequently used to analyze and predict time-series (temporal) regression problems.
+
+The results, presented in this project through various plots, demonstrate that the LSTM’s predictions closely match actual sales trends, indicating its effectiveness in learning demand patterns and forecasting future sales with a degree of accuracy. Since the predicted values follow the true values, one can infer that the model has good and reliable performance.
+
+The paper concludes with the hypothesis that focusing on individual store data might enhance the model’s ability to predict store-specific demand, suggesting a direction for further research.
 
 ## Getting Started
 
 The project is setup as two (2) parts. The first is the `docs` folder which holds the the presentation and paper from this project. The second part is the source code that is under `src`. It holds all the source code used on this project.
+
+### Testing the Deployment
+
+In order to test the deployment of this project you will need **Jupyter Notebooks** installed and running Python `3.1.x` on your local system. You can then follow the details in the `/src/..` folder by start at `App_01_Train_LSTM_Model.ipynb` and follow it's markdown comments inside the source file.
 
 ### Documents - Paper & Presentation (`docs`)
 
