@@ -5,6 +5,13 @@
 # VSCode
 .vscode
 
+# Coding & MTSU Cleanup
+.jupyter 
+.local
+.profile 
+.bash_logout
+.bashrc
+
 
 
 # Byte-compiled / optimized / DLL files

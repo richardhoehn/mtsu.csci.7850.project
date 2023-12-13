@@ -1,10 +1,13 @@
-# Deep Learning Project - Demand Forecasting
-This is the repository for the Deep Learning semester project at MTSU (CSCI 7850). I plan on focusing my research and student learning on demand fore- casting using Deep Learning recurrent neural networks (RNNs) in specific the Long Short Term Memory (`LSTM`) and Gate Recurrent Units (`GRU`) architectures. Both the LSTM and GRU models can capture complex temporal dependencies over longer ranges of time and patterns in historical sales data, making them a very good option for demand forecasting tasks.
+# Deep Learning Project - LSTM Demand Forecasting
+This is the repository for the Deep Learning semester project at MTSU (CSCI 7850). 
+
+## Getting Started
+
 
 ## AWS S3 Objects
 The data for this project can be retrieved by:
 * https://s3.amazonaws.com/mtsu.csci.7850.project/train.csv
-* https://s3.amazonaws.com/mtsu.csci.7850.project/test.csv
+* https://s3.amazonaws.com/mtsu.csci.7850.project/lstm-model-2023-12-13.pth
 
 The bucket policy is for `s3:GetObject` objects only. As the following bucket policy setup:
 ```
@@ -20,7 +23,3 @@ The bucket policy is for `s3:GetObject` objects only. As the following bucket po
     ]
 }
 ```
-
-## Links
-* https://machinelearningmastery.com/multi-label-classification-with-deep-learning/
-* https://machinelearningmastery.com/update-neural-network-models-with-more-data/
